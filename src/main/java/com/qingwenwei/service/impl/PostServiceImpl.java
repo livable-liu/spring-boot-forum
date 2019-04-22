@@ -1,6 +1,7 @@
 package com.qingwenwei.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,10 +96,22 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Map<String, Object> findPosts() {
+	public Map<String, Object> findPosts(Long page) {
 		List<Post> posts = this.postMapper.findAll();
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("posts", posts);
+		List<Map> data = new ArrayList<>();
+		for (int i = (int) (page - 1) * 10; i < Math.min(posts.size(), page * 10); i ++) {
+			Map map = new HashMap();
+			map.put("title", posts.get(i).getTitle());
+			map.put("body", posts.get(i).getBody());
+			map.put("category", posts.get(i).getCategory().getDisplayName());
+			map.put("post_id", posts.get(i).getId());
+			map.put("hit_count", posts.get(i).getHitCount() == null ? 0 : posts.get(i).getHitCount());
+			data.add(map);
+		}
+		attributes.put("pri_data", data);
+		attributes.put("pri_total", posts.size());
 		return attributes;
 	}
 
@@ -118,6 +131,18 @@ public class PostServiceImpl implements PostService {
 		attributes.put("title", post.getTitle());
 		attributes.put("comments", comments);
 		attributes.put("commentDto", new CommentDto());
+		Map<String, Object> data = new HashMap<>();
+		data.put("post_id", post.getId() + "");
+		data.put("title", post.getTitle());
+		data.put("body", post.getBody());
+		data.put("category", post.getCategory().getDisplayName());
+		data.put("hit_count", post.getHitCount() == null ? 0 : post.getHitCount());
+		List<String> commentList = new ArrayList<>();
+		for (int i = 0; i < comments.size(); i ++) {
+			commentList.add(comments.get(i).getBody());
+		}
+		data.put("comment", commentList);
+		attributes.put("pri_data", data);
 		return attributes;
 	}
 
@@ -182,6 +207,19 @@ public class PostServiceImpl implements PostService {
 		attributes.put("isLastPage", postsPageInfo.isIsLastPage());
 		attributes.put("totalPages", postsPageInfo.getPages());
 		attributes.put("pageType", "categoryPage");
+
+		List<Map> data = new ArrayList<>();
+		for (int i = (int) (currPage - 1) * pageSize; i < Math.min(postsPageInfo.getTotal(), currPage * pageSize); i ++) {
+			Map map = new HashMap();
+			map.put("title", posts.get(i % pageSize).getTitle());
+			map.put("body", posts.get(i % pageSize).getBody());
+			map.put("category", posts.get(i % pageSize).getCategory().getDisplayName());
+			map.put("post_id", posts.get(i % pageSize).getId());
+			map.put("hit_count", posts.get(i % pageSize).getHitCount() == null ? 0 : posts.get(i % pageSize).getHitCount());
+			data.add(map);
+		}
+		attributes.put("pri_data", data);
+		attributes.put("pri_total", postsPageInfo.getTotal());
 		return attributes;
 	}
 

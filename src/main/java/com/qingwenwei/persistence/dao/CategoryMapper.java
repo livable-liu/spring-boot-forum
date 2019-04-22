@@ -11,6 +11,8 @@ public interface CategoryMapper {
 
 	Category findByName(String categoryName);
 
+	String getCategoryNameByID(String categoryID);
+
 	int save(Category category);
 
 	List<Category> findAll();

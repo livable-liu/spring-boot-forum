@@ -15,4 +15,6 @@ public interface CategoryService {
 
 	List<Category> findAll();
 
+	String getCategoryNameByID(String categoryID);
+
 }

@@ -47,9 +47,16 @@ public class CategoryServiceImpl implements CategoryService {
 		return attributes;
 	}
 
+
+
 	@Override
 	public List<Category> findAll() {
 		return this.categoryMapper.findAll();
+	}
+
+	@Override
+	public String getCategoryNameByID(String categoryID) {
+		return this.categoryMapper.getCategoryNameByID(categoryID);
 	}
 
 }

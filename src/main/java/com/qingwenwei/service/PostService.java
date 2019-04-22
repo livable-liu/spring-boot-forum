@@ -19,7 +19,7 @@ public interface PostService {
 
 	int deletePostAndComments(Long postId);
 
-	Map<String, Object> findPosts();
+	Map<String, Object> findPosts(Long page);
 
 	Map<String, Object> findPostsByPage(int currPage, int pageSize);
 
